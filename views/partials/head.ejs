@@ -1,17 +1,23 @@
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="CSE Motors, your destination for classic and custom vehicles. Explore our inventory and find your dream car today.">
-    
-    <title><%- title %> | CSE 340 App</title>
+  <meta name="description" content="CSE Motors, your destination for classic and custom vehicles. Explore our inventory and find your dream car today.">
+  
+  <title><%= title %> | CSE 340 App</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap"></noscript>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap">
+  </noscript>
 
-    <link rel="stylesheet" href="/css/styles.css" media="screen">
+  <link rel="stylesheet" href="/css/styles.css" media="screen">
+
+  <% if (title && title.toString().includes("Error")) { %>
+    <link rel="stylesheet" href="/css/errors.css" media="screen">
+  <% } %>
 </head>

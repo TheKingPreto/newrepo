@@ -1,0 +1,23 @@
+.vehicle-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.vehicle-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.vehicle-info {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .vehicle-detail {
+    grid-template-columns: 1fr;
+  }
+}

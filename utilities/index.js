@@ -4,7 +4,7 @@ const Util = {}
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
-Util.getNav = async function (req, res, next) {
+Util.getNav = async function () {
   let data = await invModel.getClassifications()
   let list = "<ul>"
   list += '<li><a href="/" title="Home page">Home</a></li>'
@@ -33,7 +33,7 @@ Util.buildClassificationGrid = async function(data){
     grid = '<ul id="inv-display">'
     data.forEach(vehicle => { 
       grid += '<li>'
-      grid +=  '<a href="../../inv/detail/'+ vehicle.inv_id 
+      grid +=  '<a href="/inv/detail/'+ vehicle.inv_id 
       + '" title="View ' + vehicle.inv_make + ' '+ vehicle.inv_model 
       + 'details"><img src="' + vehicle.inv_thumbnail 
       +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
@@ -41,7 +41,7 @@ Util.buildClassificationGrid = async function(data){
       grid += '<div class="namePrice">'
       grid += '<hr />'
       grid += '<h2>'
-      grid += '<a href="../../inv/detail/' + vehicle.inv_id +'" title="View ' 
+      grid += '<a href="/inv/detail/' + vehicle.inv_id +'" title="View ' 
       + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
       + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
       grid += '</h2>'
@@ -55,6 +55,30 @@ Util.buildClassificationGrid = async function(data){
     grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
   }
   return grid
+}
+
+Util.buildVehicleDetailHTML = async function (vehicle) {
+  const price = vehicle.inv_price.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  })
+  const mileage = vehicle.inv_miles.toLocaleString("en-US")
+
+  return `
+    <section class="vehicle-detail">
+      <div class="vehicle-image">
+        <img src="${vehicle.inv_image}" 
+             alt="Image of ${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}" />
+      </div>
+      <div class="vehicle-info">
+        <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+        <p><strong>Price:</strong> ${price}</p>
+        <p><strong>Mileage:</strong> ${mileage} miles</p>
+        <p><strong>Color:</strong> ${vehicle.inv_color}</p>
+        <p><strong>Description:</strong> ${vehicle.inv_description}</p>
+      </div>
+    </section>
+  `
 }
 
 /* ****************************************
