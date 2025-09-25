@@ -1,0 +1,54 @@
+<main>
+  <h1><%= title %></h1>
+
+  <% if (locals.message) { %>
+    <div class="flash-message"><%= message %></div>
+  <% } %>
+
+  <form action="/account/register" method="post" action="/account/register" class="register-form">
+    <label for="firstname">First name:</label>
+    <input type="text" id="firstname" name="firstname" required
+           value="<%= locals.firstname || '' %>">
+
+    <label for="lastname">Last name:</label>
+    <input type="text" id="lastname" name="lastname" required
+           value="<%= locals.lastname || '' %>">
+
+    <label for="email">Email address:</label>
+    <input type="email" id="email" name="email" required
+           value="<%= locals.email || '' %>">
+
+    <label for="accountPassword">Password:</label>  
+    <span class="password-hint">
+      Passwords must be at least 12 characters and contain at least 1 number,  
+      1 uppercase letter, and 1 special character.
+    </span>  
+
+    <input type="password" name="account_password" id="accountPassword" required 
+           pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+           title="Must be at least 12 characters, include 1 uppercase letter, 1 number, and 1 special character. No spaces.">
+
+    <button type="button" class="toggle-password" onclick="togglePassword()">Show/Hide</button>
+
+    <button type="submit">Register</button>
+  </form>
+</main>
+
+<script>
+  function togglePassword() {
+    const passwordField = document.getElementById("password")
+    if (passwordField.type === "password") {
+      passwordField.type = "text"
+    } else {
+      passwordField.type = "password"
+    }
+  }
+</script>
+
+<% if (errors) { %>
+  <ul class="notice">
+ <% errors.array().forEach(error => { %>
+   <li><%= error.msg %></li>
+<%  }) %>
+ </ul>
+<% } %>
