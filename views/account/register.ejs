@@ -7,16 +7,16 @@
 
   <form action="/account/register" method="post" action="/account/register" class="register-form">
     <label for="firstname">First name:</label>
-    <input type="text" id="firstname" name="firstname" required
-           value="<%= locals.firstname || '' %>">
+    <input type="text" id="accountFirstname" name="account_firstname" required
+           value="<%= locals.account_firstname %>">
 
     <label for="lastname">Last name:</label>
-    <input type="text" id="lastname" name="lastname" required
-           value="<%= locals.lastname || '' %>">
+    <input type="text" id="accountLastname" name="account_lastname" required
+           value="<%= locals.account_lastname %>">
 
     <label for="email">Email address:</label>
-    <input type="email" id="email" name="email" required
-           value="<%= locals.email || '' %>">
+    <input type="email" id="accountEmail" name="account_email" required
+           value="<%= locals.account_email %>">
 
     <label for="accountPassword">Password:</label>  
     <span class="password-hint">

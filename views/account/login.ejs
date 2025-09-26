@@ -5,9 +5,9 @@
     <div class="flash-message"><%= message %></div>
   <% } %>
 
-  <form action="/account/login" method="post" action="/account/login" class="login-form">
+  <form id="loginForm" action="/account/login" method="post" action="/account/login" class="login-form">
     <label for="accountEmail">Email:</label>
-    <input type="email" id="accountEmail" name="account_Email" required>
+    <input type="email" id="accountEmail" name="account_email" required>
 
     <label for="accountPassword">Password:</label>
     <span class="password-hint">
