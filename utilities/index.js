@@ -1,14 +1,23 @@
 const invModel = require("../models/inventory-model")
+
 const Util = {}
 
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
 Util.getNav = async function () {
-  let data = await invModel.getClassifications()
+  let data
+  try {
+    const result = await invModel.getClassifications()
+    data = result.rows
+  } catch (error) {
+    console.error("Error fetching classifications:", error)
+    data = []
+  }
+
   let list = "<ul>"
   list += '<li><a href="/" title="Home page">Home</a></li>'
-  data.rows.forEach((row) => {
+  data.forEach((row) => {
     list += "<li>"
     list +=
       '<a href="/inv/type/' +
@@ -35,7 +44,7 @@ Util.buildClassificationGrid = async function(data){
       grid += '<li>'
       grid +=  '<a href="/inv/detail/'+ vehicle.inv_id 
       + '" title="View ' + vehicle.inv_make + ' '+ vehicle.inv_model 
-      + 'details"><img src="' + vehicle.inv_thumbnail 
+      + ' details"><img src="' + vehicle.inv_thumbnail 
       +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
       +' on CSE Motors" /></a>'
       grid += '<div class="namePrice">'
@@ -52,11 +61,14 @@ Util.buildClassificationGrid = async function(data){
     })
     grid += '</ul>'
   } else { 
-    grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+    grid = '<p class="notice">Sorry, no matching vehicles could be found.</p>'
   }
   return grid
 }
 
+/* **************************************
+* Build the vehicle detail HTML
+* ************************************ */
 Util.buildVehicleDetailHTML = async function (vehicle) {
   const price = vehicle.inv_price.toLocaleString("en-US", {
     style: "currency",
@@ -79,6 +91,22 @@ Util.buildVehicleDetailHTML = async function (vehicle) {
       </div>
     </section>
   `
+}
+
+/* **************************************
+* Build the classification select list HTML
+* ************************************ */
+Util.buildClassificationList = async function (data = [], selectedId = null) {
+  if (!Array.isArray(data)) data = []
+
+  let list = '<select name="classification_id" id="classificationList">'
+  list += '<option value="">Choose a Classification</option>'
+  data.forEach(row => {
+    const selected = row.classification_id == selectedId ? ' selected' : ''
+    list += `<option value="${row.classification_id}"${selected}>${row.classification_name}</option>`
+  })
+  list += '</select>'
+  return list
 }
 
 /* ****************************************

@@ -1,0 +1,36 @@
+<main>
+  <h1>Add New Classification</h1>
+
+  <% if (messages && messages.success) { %>
+    <p class="flash success"><%= messages.success %></p>
+  <% } %>
+  <% if (messages && messages.error) { %>
+    <p class="flash error"><%= messages.error %></p>
+  <% } %>
+
+  <form id="addClassificationForm" action="/inv/add-classification" method="POST" novalidate>
+    <label for="classification_name">Classification Name</label>
+    <input 
+      type="text" 
+      id="classification_name" 
+      name="classification_name" 
+      required 
+      pattern="^[A-Za-z0-9]+$" 
+      title="Only letters and numbers are allowed. No spaces or special characters."
+    >
+    <button type="submit">Add Classification</button>
+  </form>
+</main>
+
+<script>
+  // Client-side validation
+  const form = document.getElementById("addClassificationForm")
+  form.addEventListener("submit", (e) => {
+    const input = document.getElementById("classification_name")
+    const regex = /^[A-Za-z0-9]+$/
+    if (!regex.test(input.value)) {
+      e.preventDefault()
+      alert("Classification name can only contain letters and numbers (no spaces or special characters).")
+    }
+  })
+</script>

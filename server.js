@@ -41,7 +41,7 @@ app.set("layout", "./layouts/layout")
 
 // Body parser Middleware
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // Express Messages Middleware
 app.use(require('connect-flash')())

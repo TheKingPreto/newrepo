@@ -1,0 +1,56 @@
+<h1>Add New Vehicle</h1>
+
+<% if (flashMessage) { %>
+  <p class="flash"><%= flashMessage %></p>
+<% } %>
+
+<% if (errors) { %>
+  <ul class="errors">
+    <% errors.forEach(function(error){ %>
+      <li><%= error.msg %></li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<form action="/inventory/add" method="POST">
+  
+  <label for="inv_make">Make:</label>
+  <input type="text" id="inv_make" name="inv_make" required
+         value="<%= inv_make ? inv_make : '' %>">
+
+  <label for="inv_model">Model:</label>
+  <input type="text" id="inv_model" name="inv_model" required
+         value="<%= inv_model ? inv_model : '' %>">
+
+  <label for="inv_year">Year:</label>
+  <input type="number" id="inv_year" name="inv_year" min="1900" max="2099" required
+         value="<%= inv_year ? inv_year : '' %>">
+
+  <label for="inv_description">Description:</label>
+  <textarea id="inv_description" name="inv_description" required><%= inv_description ? inv_description : '' %></textarea>
+
+  <label for="inv_price">Price:</label>
+  <input type="number" id="inv_price" name="inv_price" required
+         value="<%= inv_price ? inv_price : '' %>">
+
+  <label for="inv_miles">Miles:</label>
+  <input type="number" id="inv_miles" name="inv_miles" required
+         value="<%= inv_miles ? inv_miles : '' %>">
+
+  <label for="inv_color">Color:</label>
+  <input type="text" id="inv_color" name="inv_color" required
+         value="<%= inv_color ? inv_color : '' %>">
+
+  <label for="classificationList">Classification:</label>
+  <%- classificationSelect %> 
+
+  <label for="inv_image">Image Path:</label>
+  <input type="text" id="inv_image" name="inv_image" 
+         value="<%= inv_image ? inv_image : '/images/no-image-available.png' %>">
+
+  <label for="inv_thumbnail">Thumbnail Path:</label>
+  <input type="text" id="inv_thumbnail" name="inv_thumbnail" 
+         value="<%= inv_thumbnail ? inv_thumbnail : '/images/no-image-available.png' %>">
+
+  <button type="submit">Add Vehicle</button>
+</form>
