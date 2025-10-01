@@ -1,4 +1,4 @@
-<h1>Add New Vehicle</h1>
+<h1>Edit Vehicle</h1>
 
 <% if (flashMessage) { %>
   <p class="flash"><%= flashMessage %></p>
@@ -13,7 +13,7 @@
 <% } %>
 
 
-<form action="/inv/add-inventory" method="POST">
+<form id="updateForm" action="/inv/update" method="POST">
   
   <label for="inv_make">Make:</label>
   <input type="text" id="inv_make" name="inv_make" required
@@ -28,9 +28,7 @@
          value="<%= inv_year ? inv_year : '' %>">
 
   <label for="inv_description">Description:</label>
-  <textarea id="inv_description" name="inv_description" required>
-       <%= inv_description ? inv_description : '' %>
-  </textarea>
+  <textarea id="inv_description" name="inv_description" required><%= inv_description ? inv_description : '' %></textarea>
 
   <label for="inv_price">Price:</label>
   <input type="number" id="inv_price" name="inv_price" required
@@ -55,5 +53,9 @@
   <input type="text" id="inv_thumbnail" name="inv_thumbnail" 
          value="<%= inv_thumbnail ? inv_thumbnail : '/images/no-image-available.png' %>">
 
-  <button type="submit">Add Vehicle</button>
+  <button type="submit" disabled>Update Vehicle</button>
+  <input type="hidden" name="inv_id"
+  <% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
+  <% } %>>
+  <script src="/js/inv-update.js"></script>
 </form>

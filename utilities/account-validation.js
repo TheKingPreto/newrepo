@@ -4,6 +4,99 @@ const accountModel = require("../models/account-model")
 
 const validate = {}
 
+/* **********************************
+ * Inventory Data Validation Rules (for add and update)
+ * ********************************* */
+validate.newInventoryRules = () => {
+  return [
+    body("inv_make")
+      .trim()
+      .escape()
+      .notEmpty()
+      .withMessage("Please provide a make."),
+    body("inv_model")
+      .trim()
+      .escape()
+      .notEmpty()
+      .withMessage("Please provide a model."),
+    body("inv_year")
+      .trim()
+      .notEmpty()
+      .isInt({ min: 1900, max: 2100 })
+      .withMessage("Please provide a valid year."),
+    body("inv_description")
+      .trim()
+      .escape()
+      .notEmpty()
+      .withMessage("Please provide a description."),
+    body("inv_price")
+      .trim()
+      .notEmpty()
+      .isFloat({ min: 0 })
+      .withMessage("Please provide a valid price."),
+    body("inv_miles")
+      .trim()
+      .notEmpty()
+      .isInt({ min: 0 })
+      .withMessage("Please provide valid mileage."),
+    body("inv_color")
+      .trim()
+      .escape()
+      .notEmpty()
+      .withMessage("Please provide a color."),
+    body("classification_id")
+      .trim()
+      .notEmpty()
+      .withMessage("Please select a classification."),
+  ]
+}
+
+/* **********************************
+ * Check inventory update data
+ * Redirects to edit-inventory view if errors exist
+ * ********************************* */
+validate.checkUpdateData = async (req, res, next) => {
+  const {
+    inv_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_price,
+    inv_miles,
+    inv_color,
+    classification_id,
+  } = req.body
+
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    let classificationSelect = await utilities.buildClassificationList(classification_id)
+    let nav = await utilities.getNav()
+    const itemName = `${inv_make} ${inv_model}`
+    res.render("./inventory/edit-inventory", {
+      title: `Edit ${itemName}`,
+      nav,
+      classificationSelect,
+      errors,
+      inv_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image: req.body.inv_image,
+      inv_thumbnail: req.body.inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+      classification_id,
+    })
+    return
+  }
+
+  next()
+}
+
+
 /*  **********************************
  *  Registration Data Validation Rules
  * ********************************* */
@@ -74,5 +167,42 @@ validate.checkRegData = async (req, res, next) => {
   }
   next()
 }
+
+/* **********************************
+ *  Login Data Validation Rules
+ * ********************************* */
+validate.loginRules = () => {
+  return [
+    body("account_email")
+      .trim()
+      .isEmail()
+      .withMessage("A valid email is required."),
+    body("account_password")
+      .trim()
+      .notEmpty()
+      .withMessage("Password is required."),
+  ]
+}
+
+/* ******************************
+ * Check login data and return errors or continue
+ * ***************************** */
+validate.checkLoginData = async (req, res, next) => {
+  const { account_email } = req.body
+  let errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    let nav = await utilities.getNav()
+    res.render("account/login", {
+      errors,
+      title: "Login",
+      nav,
+      account_email,
+    })
+    return
+  }
+  next()
+}
+
+
 
 module.exports = validate

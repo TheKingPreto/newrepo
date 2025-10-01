@@ -1,0 +1,17 @@
+<main>
+  <h1>Account Management</h1>
+
+  <% if (flashMessage) { %>
+    <p class="flash"><%= flashMessage %></p>
+  <% } %>
+
+  <% if (errors) { %>
+    <ul class="errors">
+      <% errors.forEach(function(error){ %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <p>You're logged in.</p>
+</main>
