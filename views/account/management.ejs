@@ -1,17 +1,38 @@
-<main>
-  <h1>Account Management</h1>
+<div>
 
-  <% if (flashMessage) { %>
-    <p class="flash"><%= flashMessage %></p>
-  <% } %>
+<%- messages() %>
 
-  <% if (errors) { %>
-    <ul class="errors">
-      <% errors.forEach(function(error){ %>
-        <li><%= error.msg %></li>
-      <% }) %>
-    </ul>
-  <% } %>
+<% if (locals.loggedin && locals.accountData) { %>
+    <% const account = locals.accountData; %>
+    
+    <h1>Account Management</h1>
+    <h2>Welcome <%= account.account_firstname %></h2>
 
-  <p>You're logged in.</p>
-</main>
+    <div>
+        <h3>Account Information</h3>
+        <p>
+            <a href="/account/update" 
+               title="Update your account information">
+                Update Account Information
+            </a>
+        </p>
+    </div>
+    
+    <% if (account.account_type === "Employee" || account.account_type === "Admin") { %>
+        <div>
+            <h3>Inventory Management</h3>
+            <p>
+                <a href="/inv" 
+                   title="Manage vehicle inventory">
+                    Access Inventory Management View
+                </a>
+            </p>
+        </div>
+    <% } %>
+
+<% } else { %>
+    <h1>Not Logged In</h1>
+    <p>Please <a href="/account/login">log in</a> to manage your account.</p>
+<% } %>
+
+</div>

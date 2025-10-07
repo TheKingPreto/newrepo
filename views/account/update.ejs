@@ -1,0 +1,61 @@
+<div>
+
+<h1><%= title %></h1>
+
+<%- messages() %>
+
+<% if (errors) { %>
+    <ul class="notice">
+        <% errors.array().forEach(error => { %>
+            <li><%= error.msg %></li>
+        <% }) %>
+    </ul>
+<% } %>
+
+<form id="accountUpdateForm" action="/account/update" method="post">
+    <h2>Account Update</h2>
+    
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+
+    <div>
+        <label for="account_firstname">First Name (Required)</label>
+        <input type="text" name="account_firstname" id="account_firstname" required 
+               value="<%= account_firstname %>">
+    </div>
+
+    <div>
+        <label for="account_lastname">Last Name (Required)</label>
+        <input type="text" name="account_lastname" id="account_lastname" required 
+               value="<%= account_lastname %>">
+    </div>
+
+    <div>
+        <label for="account_email">Email Address (Required)</label>
+        <input type="email" name="account_email" id="account_email" required 
+               value="<%= account_email %>">
+    </div>
+    
+    <input type="submit" value="Update Account">
+</form>
+
+<form id="passwordChangeForm" action="/account/change-password" method="post">
+    <h2>Change Password</h2>
+
+    <p>
+        By entering a new password, your current password will be changed. The password must be at least 12 characters, 
+        containing 1 uppercase letter, 1 number, and 1 special character.
+    </p>
+
+    <div>
+        <label for="account_password">New Password (Required)</label>
+        <input type="password" name="account_password" id="account_password" required 
+               pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+               title="Password must be at least 12 characters and contain at least 1 uppercase, 1 number, and 1 special character.">
+    </div>
+
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+    
+    <input type="submit" value="Change Password">
+</form>
+
+</div>

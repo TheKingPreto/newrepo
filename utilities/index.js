@@ -1,6 +1,6 @@
+require("dotenv").config()
 const invModel = require("../models/inventory-model")
 const jwt = require("jsonwebtoken")
-require("dotenv").config()
 
 const Util = {}
 
@@ -45,61 +45,39 @@ Util.buildClassificationGrid = async function(data){
     data.forEach(vehicle => { 
       grid += '<li>'
       grid +=  '<a href="/inv/detail/'+ vehicle.inv_id 
-      + '" title="View ' + vehicle.inv_make + ' '+ vehicle.inv_model 
-      + ' details"><img src="' + vehicle.inv_thumbnail 
-      +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
-      +' on CSE Motors" /></a>'
+      grid +=  '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model 
+      grid +=  ' details"><img src="' + vehicle.inv_thumbnail 
+      grid +=  '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model 
+      grid +=  ' on CSE Motors" /></a>'
       grid += '<div class="namePrice">'
-      grid += '<hr />'
       grid += '<h2>'
       grid += '<a href="/inv/detail/' + vehicle.inv_id +'" title="View ' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
+      grid += vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
+      grid += vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
       grid += '</h2>'
-      grid += '<span>$' 
-      + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
+      grid += '<span>$' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
       grid += '</div>'
       grid += '</li>'
     })
     grid += '</ul>'
   } else { 
-    grid = '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+    grid  = '<p class="notice">Sorry, no matching vehicles could be found.</p>'
   }
   return grid
 }
 
-/* **************************************
-* Build the vehicle detail HTML
-* ************************************ */
-Util.buildVehicleDetailHTML = async function (vehicle) {
-  const price = vehicle.inv_price.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-  })
-  const mileage = vehicle.inv_miles.toLocaleString("en-US")
-
-  return `
-    <section class="vehicle-detail">
-      <div class="vehicle-image">
-        <img src="${vehicle.inv_image}" 
-             alt="Image of ${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}" />
-      </div>
-      <div class="vehicle-info">
-        <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
-        <p><strong>Price:</strong> ${price}</p>
-        <p><strong>Mileage:</strong> ${mileage} miles</p>
-        <p><strong>Color:</strong> ${vehicle.inv_color}</p>
-        <p><strong>Description:</strong> ${vehicle.inv_description}</p>
-      </div>
-    </section>
-  `
-}
-
-/* **************************************
-* Build the classification select list HTML
-* ************************************ */
-Util.buildClassificationList = async function (data = [], selectedId = null) {
-  if (!Array.isArray(data)) data = []
+/* ****************************************
+ * Build the classification select list 
+ **************************************** */
+Util.buildClassificationList = async function (selectedId) {
+  let data
+  try {
+    const result = await invModel.getClassifications()
+    data = result.rows
+  } catch (error) {
+    console.error("Error fetching classifications:", error)
+    data = []
+  }
 
   let list = '<select name="classification_id" id="classificationList">'
   list += '<option value="">Choose a Classification</option>'
@@ -119,7 +97,7 @@ Util.buildClassificationList = async function (data = [], selectedId = null) {
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
 /* ****************************************
-* Middleware to check token validity
+* Middleware to check token validity (Updated to use res.locals)
 **************************************** */
 Util.checkJWTToken = (req, res, next) => {
  if (req.cookies.jwt) {
@@ -128,29 +106,46 @@ Util.checkJWTToken = (req, res, next) => {
    process.env.ACCESS_TOKEN_SECRET,
    function (err, accountData) {
     if (err) {
-     req.flash("Please log in")
      res.clearCookie("jwt")
-     return res.redirect("/account/login")
+     res.locals.loggedIn = 0 
+     res.locals.accountData = null
+     return next() 
     }
     res.locals.accountData = accountData
-    res.locals.loggedin = 1
+    res.locals.loggedIn = 1
     next()
    })
  } else {
+  res.locals.loggedIn = 0 
+  res.locals.accountData = null
   next()
  }
 }
 
 /* ****************************************
- *  Check Login
+ * Check Login
  * ************************************ */
- Util.checkLogin = (req, res, next) => {
-  if (res.locals.loggedin) {
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedIn) {
     next()
   } else {
     req.flash("notice", "Please log in.")
     return res.redirect("/account/login")
   }
- }
+}
+
+/* ****************************************
+ * Check Authorization (Task 2)
+ * ************************************ */
+Util.checkAuthorization = (req, res, next) => {
+  const accountType = res.locals.accountData?.account_type
+  
+  if (accountType === "Employee" || accountType === "Admin") {
+    next()
+  } else {
+    req.flash("notice", "You do not have the required authorization (Employee or Admin) to access this area. Please log in with an authorized account.")
+    return res.redirect("/account/login")
+  }
+}
 
 module.exports = Util

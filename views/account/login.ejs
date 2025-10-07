@@ -23,3 +23,11 @@
 
   <p>No account? <a href="/account/register">Sign-up</a></p>
 </main>
+
+<% if (flashMessages && flashMessages.length > 0) { %>
+  <ul class="flash-messages">
+    <% flashMessages.forEach(function(message){ %>
+      <li><%= message %></li>
+    <% }) %>
+  </ul>
+<% } %>

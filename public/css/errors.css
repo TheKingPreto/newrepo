@@ -25,3 +25,11 @@
 .back-link:hover {
   background-color: #555;
 }
+
+.flash-messages {
+  background: #ffcccc;
+  color: #660000;
+  padding: 10px;
+  border-radius: 8px;
+  list-style: none;
+}
