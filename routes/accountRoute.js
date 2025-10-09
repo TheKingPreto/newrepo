@@ -5,6 +5,8 @@ const accountController = require("../controllers/accountController")
 const utilities = require("../utilities")
 const regValidate = require('../utilities/account-validation') 
 const checkLogin = utilities.checkLogin 
+const reviewController = require('../controllers/reviewController') 
+const reviewValidate = require('../utilities/review-validation')
 
 // Route to build login view
 router.get(
@@ -70,6 +72,29 @@ router.post(
 router.get(
   "/logout", 
   utilities.handleErrors(accountController.accountLogout)
+)
+
+// Edit view route
+router.get(
+  "/review/edit/:review_id", 
+  checkLogin,
+  utilities.handleErrors(reviewController.buildEditView)
+)
+
+// Update view route
+router.post(
+  "/review/update", 
+  checkLogin,
+  reviewValidate.reviewRules(), 
+  reviewValidate.checkReviewData,
+  utilities.handleErrors(reviewController.updateReview)
+)
+
+// Delete review route
+router.post(
+  "/review/delete", 
+  checkLogin,
+  utilities.handleErrors(reviewController.deleteReview)
 )
 
 module.exports = router

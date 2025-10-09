@@ -1,5 +1,6 @@
 const invModel = require("../models/inventory-model")
 const utilities = require("../utilities/")
+const reviewModel = require("../models/review-model")
 
 const invCont = {}
 
@@ -41,13 +42,17 @@ invCont.buildByInvId = async function (req, res, next) {
       return next({ status: 404, message: "Vehicle not found" })
     }
 
-    const grid = await utilities.buildVehicleDetailHTML(vehicleData)
+    const reviews = await reviewModel.getReviewsByInventoryId(inv_id)
+    const detailHTML = await utilities.buildVehicleDetail(vehicleData)
     const nav = await utilities.getNav()
 
     res.render("./inventory/detail", {
       title: `${vehicleData.inv_make} ${vehicleData.inv_model}`,
       nav,
-      grid,
+      detailHTML,
+      vehicle: vehicleData,
+      reviews: reviews,
+      errors: null,
     })
   } catch (error) {
     next(error)

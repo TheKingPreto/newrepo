@@ -4,6 +4,8 @@ const router = new express.Router()
 const invController = require("../controllers/invController")
 const utilities = require("../utilities")
 const { newInventoryRules, checkUpdateData } = require("../utilities/account-validation")
+const reviewController = require('../controllers/reviewController')
+const reviewValidate = require('../utilities/review-validation')
 
 // Route to build inventory by classification view
 router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId))
@@ -64,9 +66,20 @@ router.post(
 )
 
 // Deliver delete confirmation view
-router.get("/delete/:inv_id", utilities.handleErrors(invController.buildDeleteInventory))
+router.get("/delete/:inv_id", utilities.handleErrors(invController.buildDeleteInventory)
+)
 
 // Handle delete process
-router.post("/delete", utilities.handleErrors(invController.deleteInventory))
+router.post("/delete", utilities.handleErrors(invController.deleteInventory)
+)
+
+// Route to submission of a new review
+router.post(
+  "/add-review",
+  utilities.checkLogin, 
+  reviewValidate.reviewRules(),
+  reviewValidate.checkReviewData,
+  utilities.handleErrors(reviewController.addReview)
+)
 
 module.exports = router;
